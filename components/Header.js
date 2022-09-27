@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from "react-native";
 
-export default function Header(props){
-
+export default function Header(props) {
   return (
-      <View>
-        <Text> {props.appName}</Text>
-      </View>
+    <View>
+      <Text> Welcome to {props.appName}</Text>
+    </View>
   );
 }
+
+
