@@ -7,12 +7,17 @@ import {
   Button,
   SafeAreaView,
   ScrollView,
+  FlatList,
 } from "react-native";
 import Header from "./components/Header";
 import Input from "./components/Input";
 import { useState } from "react";
+import GoalItem from "./components/GoalItem";
 
 export default function App() {
+  function onDelete(deletedKey){
+    setGoals(goals.filter((goal) => goal.key != deletedKey));
+}
   const [goals, setGoals] = useState([]);
   const onTextAdd = function (newText) {
     const newGoal = { text: newText, key: Math.random() };
@@ -35,15 +40,16 @@ export default function App() {
         <Button title="Add a Goal" onPress={() => setModalVisible(true)} />
       </View>
       <View style={styles.bottomContainer}>
-        <ScrollView contentContainerStyle={styles.scrollViewItems}>
-          {goals.map((goal) => {
+        <FlatList
+          data={goals}
+          renderItem={({item}) => { //object destructure or you can use obj and obj.item.key and obj.item.text
             return (
-              <View style={styles.textContainer} key={goal.key}>
-                <Text>{goal.text}</Text>
-              </View>
+              <GoalItem goal={item} onDelete={onDelete}/>
             );
-          })}
-        </ScrollView>
+          }}
+          contentContainerStyle={styles.scrollViewItems}
+        >
+        </FlatList>
       </View>
       <Input onAdd={onTextAdd} modal={modalVisible} onCancel={onCancel} />
       <StatusBar style="auto" />
@@ -67,17 +73,7 @@ const styles = StyleSheet.create({
     flex: 4,
     backgroundColor: "pink",
   },
-  scrollViewItems: { 
-    alignItems: "center" 
-  },
-  textContainer: {
-    backgroundColor: "#aaa",
-    borderRadius: 5,
-    color: "blue",
-    padding: 30,
-    margin: 30,
-  },
-  text: {
-    fontSize: 12,
+  scrollViewItems: {
+    alignItems: "center",
   },
 });
