@@ -5,8 +5,11 @@ import Input from "./components/Input";
 import { useState } from "react";
 
 export default function App() {
+  const [goals, setGoals] = useState([])
   const onTextAdd = function (newText) {
-    console.log(newText);
+    const newGoal = {text:newText, key:Math.random()};
+    setGoals((goals) => {return [...goals, newGoal];});
+    console.log(goals);
     setModalVisible(false);
   };
   const onCancel = function () {
