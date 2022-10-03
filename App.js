@@ -6,6 +6,7 @@ import {
   TextInput,
   Button,
   SafeAreaView,
+  ScrollView,
 } from "react-native";
 import Header from "./components/Header";
 import Input from "./components/Input";
@@ -34,7 +35,7 @@ export default function App() {
         <Button title="Add a Goal" onPress={() => setModalVisible(true)} />
       </View>
       <View style={styles.bottomContainer}>
-        <View>
+        <ScrollView contentContainerStyle={styles.scrollViewItems}>
           {goals.map((goal) => {
             return (
               <View style={styles.textContainer} key={goal.key}>
@@ -42,7 +43,7 @@ export default function App() {
               </View>
             );
           })}
-        </View>
+        </ScrollView>
       </View>
       <Input onAdd={onTextAdd} modal={modalVisible} onCancel={onCancel} />
       <StatusBar style="auto" />
@@ -65,7 +66,9 @@ const styles = StyleSheet.create({
   bottomContainer: {
     flex: 4,
     backgroundColor: "pink",
-    alignItems: "center",
+  },
+  scrollViewItems: { 
+    alignItems: "center" 
   },
   textContainer: {
     backgroundColor: "#aaa",
@@ -74,7 +77,7 @@ const styles = StyleSheet.create({
     padding: 30,
     margin: 30,
   },
-  text:{
-    fontSize:12,
-  }
+  text: {
+    fontSize: 12,
+  },
 });
