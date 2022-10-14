@@ -15,9 +15,12 @@ import { useState } from "react";
 import GoalItem from "./components/GoalItem";
 
 export default function App() {
-  function onDelete(deletedKey){
+  function onDelete(deletedKey) {
     setGoals(goals.filter((goal) => goal.key != deletedKey));
-}
+  }
+  function itemPressed() {
+    console.log("item pressed.");
+  }
   const [goals, setGoals] = useState([]);
   const onTextAdd = function (newText) {
     const newGoal = { text: newText, key: Math.random() };
@@ -42,14 +45,12 @@ export default function App() {
       <View style={styles.bottomContainer}>
         <FlatList
           data={goals}
-          renderItem={({item}) => { //object destructure or you can use obj and obj.item.key and obj.item.text
-            return (
-              <GoalItem goal={item} onDelete={onDelete}/>
-            );
+          renderItem={({ item }) => {
+            //object destructure or you can use obj and obj.item.key and obj.item.text
+            return <GoalItem goal={item} onDelete={onDelete} onitemPress={itemPressed}/>;
           }}
           contentContainerStyle={styles.scrollViewItems}
-        >
-        </FlatList>
+        ></FlatList>
       </View>
       <Input onAdd={onTextAdd} modal={modalVisible} onCancel={onCancel} />
       <StatusBar style="auto" />
