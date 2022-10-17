@@ -5,23 +5,17 @@ export default function GoalItem({ goal, onDelete, onitemPress }) {
   function deletePressed (){
    onDelete(goal.key);
   }
+
   return (
     
       <View style={styles.textContainer}>
         <Pressable
-      onPress={onitemPress}
+      onPress={() => {onitemPress(goal)}}
       style={({pressed}) => {
         if (pressed) return styles.pressedItem;
       }}
     >
         <Text>{goal.text}</Text>
-        {/* <Button
-          title="X"
-          onPress={() => {
-            onDelete(goal.key);
-          }}
-          color="black"
-        /> */}
         </Pressable>
         <DeleteButton onDelete={deletePressed}/>
       </View>
