@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Button } from "react-native";
 import React from "react";
 import Home from "./components/Home";
 import GoalDetails from "./components/GoalDetails";
@@ -8,6 +8,13 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  function rightButton() {
+    return <Button title="urgent" onPress={rightButtonPressed} />;
+  }
+
+  function rightButtonPressed() {
+    console.log("urgent!!!");
+  }
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -28,7 +35,10 @@ export default function App() {
           name="GoalDetails"
           component={GoalDetails}
           options={({ route, navigation }) => {
-            return { title: route.params.goalObject.text };
+            return {
+              title: route.params.goalObject.text,
+              headerRight: rightButton,
+            };
           }}
         />
       </Stack.Navigator>
