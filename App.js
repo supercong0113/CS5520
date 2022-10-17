@@ -14,7 +14,7 @@ export default function App() {
         screenOptions={{
           headerStyle: { backgroundColor: "#995099" },
           headerTintColor: "#fff",
-          headerTitleAlign: 'center',
+          headerTitleAlign: "center",
         }}
       >
         <Stack.Screen
@@ -24,7 +24,13 @@ export default function App() {
             title: "All My Goals",
           }}
         />
-        <Stack.Screen name="GoalDetails" component={GoalDetails} />
+        <Stack.Screen
+          name="GoalDetails"
+          component={GoalDetails}
+          options={({ route, navigation }) => {
+            return { title: route.params.goalObject.text };
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
