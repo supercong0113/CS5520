@@ -36,9 +36,9 @@ export default function Home({ navigation }) {
     return unsubscribe;
   }, []);
 
-  function onDelete(deletedKey) {
+  async function onDelete(deletedKey) {
     // setGoals(goals.filter((goal) => goal.key != deletedKey));
-    deleteFromDB(deletedKey);
+    await deleteFromDB(deletedKey);
   }
   function itemPressed(goal) {
     console.log("item pressed.");
