@@ -11,24 +11,44 @@ import {
 } from "react-native";
 import Header from "./Header";
 import Input from "./Input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import GoalItem from "./GoalItem";
+import { writeToDB } from "../firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
+import { firestore } from "../firebase/firebase-setup";
 
-export default function Home({navigation}) {
+export default function Home({ navigation }) {
+  const [goals, setGoals] = useState([]);
+  useEffect(() => {
+    onSnapshot(collection(firestore, "Goals"), (querySnapshot) => {
+      if (querySnapshot.empty) {
+        setGoals([]);
+        return;
+      }
+      setGoals(
+        querySnapshot.docs.map((snapDoc) => {
+          let data = snapDoc.data();
+          data = { ...data, key: snapDoc.id };
+          return data;
+        })
+      );
+    });
+  }, []);
+
   function onDelete(deletedKey) {
     setGoals(goals.filter((goal) => goal.key != deletedKey));
   }
   function itemPressed(goal) {
     console.log("item pressed.");
-    navigation.navigate("GoalDetails",{goalObject:goal});
-
+    navigation.navigate("GoalDetails", { goalObject: goal });
   }
-  const [goals, setGoals] = useState([]);
-  const onTextAdd = function (newText) {
-    const newGoal = { text: newText, key: Math.random() };
-    setGoals((goals) => {
-      return [...goals, newGoal];
-    });
+ 
+  const onTextAdd = async function (newText) {
+    // const newGoal = { text: newText, key: Math.random() };
+    await writeToDB({ text: newText });
+    // setGoals((goals) => {
+    //   return [...goals, newGoal];
+    // });
     console.log(goals);
     setModalVisible(false);
   };
@@ -49,7 +69,13 @@ export default function Home({navigation}) {
           data={goals}
           renderItem={({ item }) => {
             //object destructure or you can use obj and obj.item.key and obj.item.text
-            return <GoalItem goal={item} onDelete={onDelete} onitemPress={itemPressed}/>;
+            return (
+              <GoalItem
+                goal={item}
+                onDelete={onDelete}
+                onitemPress={itemPressed}
+              />
+            );
           }}
           contentContainerStyle={styles.scrollViewItems}
         ></FlatList>
