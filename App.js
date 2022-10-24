@@ -15,6 +15,7 @@ export default function App() {
   function rightButtonPressed() {
     console.log("urgent!!!");
   }
+  
   return (
     <NavigationContainer>
       <Stack.Navigator
