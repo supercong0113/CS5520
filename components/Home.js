@@ -13,14 +13,14 @@ import Header from "./Header";
 import Input from "./Input";
 import { useState, useEffect } from "react";
 import GoalItem from "./GoalItem";
-import { writeToDB } from "../firebase/firestore";
+import { writeToDB, deleteFromDB } from "../firebase/firestore";
 import { collection, onSnapshot } from "firebase/firestore";
 import { firestore } from "../firebase/firebase-setup";
 
 export default function Home({ navigation }) {
   const [goals, setGoals] = useState([]);
   useEffect(() => {
-    onSnapshot(collection(firestore, "Goals"), (querySnapshot) => {
+    const unsubscribe = onSnapshot(collection(firestore, "Goals"), (querySnapshot) => {
       if (querySnapshot.empty) {
         setGoals([]);
         return;
@@ -33,10 +33,12 @@ export default function Home({ navigation }) {
         })
       );
     });
+    return unsubscribe;
   }, []);
 
   function onDelete(deletedKey) {
-    setGoals(goals.filter((goal) => goal.key != deletedKey));
+    // setGoals(goals.filter((goal) => goal.key != deletedKey));
+    deleteFromDB(deletedKey);
   }
   function itemPressed(goal) {
     console.log("item pressed.");

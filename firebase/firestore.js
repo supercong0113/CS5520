@@ -1,4 +1,5 @@
-import { collection, addDoc } from "firebase/firestore";
+import { async } from "@firebase/util";
+import { collection, addDoc, deleteDoc, doc } from "firebase/firestore";
 import { firestore } from "./firebase-setup";
 
 export const writeToDB = async (data) => {
@@ -9,3 +10,10 @@ export const writeToDB = async (data) => {
   }
 };
 
+export const deleteFromDB = async (key) => {
+  try {
+    await deleteDoc(doc(firestore, "Goals", key));
+  } catch (err) {
+    console.log(err);
+  }
+};
