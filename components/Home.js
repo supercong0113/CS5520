@@ -25,6 +25,7 @@ export default function Home({ navigation }) {
         setGoals([]);
         return;
       }
+      
       setGoals(
         querySnapshot.docs.map((snapDoc) => {
           let data = snapDoc.data();
