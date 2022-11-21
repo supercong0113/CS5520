@@ -14,26 +14,33 @@ import Input from "./Input";
 import { useState, useEffect } from "react";
 import GoalItem from "./GoalItem";
 import { writeToDB, deleteFromDB } from "../firebase/firestore";
-import { collection, onSnapshot } from "firebase/firestore";
-import { firestore } from "../firebase/firebase-setup";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { auth, firestore, storage } from "../firebase/firebase-setup";
+import { uploadBytes, ref } from "firebase/storage";
 
 export default function Home({ navigation }) {
   const [goals, setGoals] = useState([]);
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(firestore, "Goals"), (querySnapshot) => {
-      if (querySnapshot.empty) {
-        setGoals([]);
-        return;
+    const unsubscribe = onSnapshot(
+      query(
+        collection(firestore, "Goals"),
+        where("user", "==", auth.currentUser.uid)
+      ),
+      (querySnapshot) => {
+        if (querySnapshot.empty) {
+          setGoals([]);
+          return;
+        }
+
+        setGoals(
+          querySnapshot.docs.map((snapDoc) => {
+            let data = snapDoc.data();
+            data = { ...data, key: snapDoc.id };
+            return data;
+          })
+        );
       }
-      
-      setGoals(
-        querySnapshot.docs.map((snapDoc) => {
-          let data = snapDoc.data();
-          data = { ...data, key: snapDoc.id };
-          return data;
-        })
-      );
-    });
+    );
     return unsubscribe;
   }, []);
 
@@ -45,14 +52,34 @@ export default function Home({ navigation }) {
     console.log("item pressed.");
     navigation.navigate("GoalDetails", { goalObject: goal });
   }
- 
-  const onTextAdd = async function (newText) {
-    // const newGoal = { text: newText, key: Math.random() };
-    await writeToDB({ text: newText });
-    // setGoals((goals) => {
-    //   return [...goals, newGoal];
-    // });
-    console.log(goals);
+  const getImage = async (uri) => {
+    try {
+      const response = await fetch(uri);
+      if (!response.ok) {
+        throw new Error("image fetch request failed");
+      }
+      const blob = await response.blob();
+      return blob;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const onTextAdd = async function (newObj) {
+    const uri = newObj.uri;
+    try {
+      if (uri) {
+        const imageBlob = await getImage(uri);
+        const imageName = uri.substring(uri.lastIndexOf("/") + 1);
+        const imageRef = await ref(storage, `images/${imageName}`);
+        const uploadResult = await uploadBytes(imageRef, imageBlob);
+        newObj.uri = uploadResult.metadata.fullPath;
+       
+      }
+      await writeToDB(newObj);
+    } catch (err) {
+      console.log(err);
+    }
+    console.log(newObj);
     setModalVisible(false);
   };
   const onCancel = function () {

@@ -8,41 +8,48 @@ import {
   Image,
 } from "react-native";
 import { useState } from "react";
+import ImageManager from "./ImageManager";
 
 export default function Input({ onAdd, modal, onCancel }) {
   const [text, setText] = useState("");
+  const [uri, setUri] = useState("");
+  const imageHandler = (uri) => {
+    console.log("imageHandler Called", uri);
+    setUri(uri);
+  }
   return (
     <Modal visible={modal}>
       <View style={styles.container}>
         <Image
-        source = {require('../assets/2617812.png')}
+          source={require("../assets/2617812.png")}
           // source={{
           //   uri: "https://cdn-icons-png.flaticon.com/512/2617/2617812.png",
           // }}
           style={styles.image}
         />
         <TextInput
-        style = {styles.input}
+          style={styles.input}
           onChangeText={(newText) => {
             setText(newText);
           }}
           value={text}
           placeholder="Please type your input here."
         />
+        <ImageManager imageHandler={imageHandler}/>
         <View style={styles.buttonContaner}>
-        <View style={styles.button}>
-        <Button title="Cancel" onPress={onCancel} />
-        </View>
-        <View style={styles.button}>
-        <Button
-          title="Confirm"
-          onPress={() => {
-            onAdd(text);
-            setText("");
-          }}
-          disabled={text.length ? false: true}
-        />
-        </View>
+          <View style={styles.button}>
+            <Button title="Cancel" onPress={onCancel} />
+          </View>
+          <View style={styles.button}>
+            <Button
+              title="Confirm"
+              onPress={() => {
+                onAdd({text, uri});
+                setText("");
+              }}
+              disabled={text.length ? false : true}
+            />
+          </View>
         </View>
       </View>
     </Modal>
@@ -56,21 +63,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  input:{
-    color: '#ff00ff',
+  input: {
+    color: "#ff00ff",
     borderBottomWidth: 2,
-    borderBottomColor: 'purple',
-    margin:5,
+    borderBottomColor: "purple",
+    margin: 5,
   },
-  button:{
-    margin:5,
-    width:'30%',
+  button: {
+    margin: 5,
+    width: "30%",
   },
-  image:{
-    width:100,
-    height:100,
+  image: {
+    width: 100,
+    height: 100,
   },
-  buttonContaner:{
-    flexDirection:"row",
-  }
+  buttonContaner: {
+    flexDirection: "row",
+  },
 });
