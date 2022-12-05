@@ -10,7 +10,7 @@ import { useState } from "react";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "./firebase/firebase-setup";
 import Profile from "./components/Profile";
-
+import Map from "./components/Map";
 const Stack = createNativeStackNavigator();
 function rightButton() {
   return <Button title="urgent" onPress={rightButtonPressed} />;
@@ -120,6 +120,9 @@ export default function App() {
             };
           }}
         />
+        <Stack.Screen
+        name="Map"
+        component={Map}/>
       </Stack.Navigator>
     );
   };
